@@ -239,13 +239,13 @@ def InteractiveImagePIL(
                     "scaleanchor": "y",
                     "scaleratio": 1,
                     "color": "white",
-                    "gridcolor": "#43454a",
+                    #"gridcolor": "#43454a",
                     "tickwidth": 1,
                 },
                 "yaxis": {
                     "range": (0, height),
                     "color": "white",
-                    "gridcolor": "#43454a",
+                    #"gridcolor": "#43454a",
                     "tickwidth": 1,
                 },
                 "images": [
@@ -296,13 +296,10 @@ def CustomDropdown(**kwargs):
     )
 
 
-def CustomSlider(title, min, max, step, value, allow_inter=True):
-    labels = {int(i): str(i) for i in range(min, max, step)}
-    if allow_inter:
-        slider_step = 1
-    else:
-        slider_step = None
+def CustomSlider(title, min, max, step, value):
+    labels = {str(min): min, str(max): max}
     return html.Div([
         html.P(id=f"val-{title}", children=title),
-        dcc.Slider(id=f'slider-{title}', min=min, max=max, step=slider_step, value=value, marks=labels)
+        dcc.Slider(id=f'slider-{title}', min=min, max=max, step=step, value=value, marks=labels,
+                   updatemode='drag')
    ])

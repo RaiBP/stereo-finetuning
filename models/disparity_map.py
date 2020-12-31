@@ -36,12 +36,15 @@ def generate_stereo_sgbm_disparity_map(left_img, right_img, min_disp=0, num_disp
                                    mode=mode)
 
     print("\nComputing the disparity  map...")
+    left_gray = cv2.cvtColor(left_img, cv2.COLOR_BGR2GRAY)
+    right_gray = cv2.cvtColor(right_img, cv2.COLOR_BGR2GRAY)
     disparity_map = stereo.compute(left_img, right_img)
 
     return disparity_map
 
 
-def generate_stereo_bm_disparity_map(left_img, right_img, min_disp=0, num_disp=64, block_size=5, prefilter_cap=1, disp12maxdiff=-1, uniqueness_ratio=0, speckle_windows_size=0,
+def generate_stereo_bm_disparity_map(left_img, right_img, min_disp=0, num_disp=64, block_size=5, prefilter_cap=1,
+                                     disp12maxdiff=-1, uniqueness_ratio=0, speckle_windows_size=0,
                                      speckle_range=0, prefilter_size=5, texture_threshold=0,
                                      use_xsobel=False):
     """
@@ -73,7 +76,10 @@ def generate_stereo_bm_disparity_map(left_img, right_img, min_disp=0, num_disp=6
     stereo.setPreFilterSize(prefilter_size)
     stereo.setTextureThreshold(texture_threshold)
     stereo.setPreFilterType(prefilter_type)
+    left_gray = cv2.cvtColor(left_img, cv2.COLOR_BGR2GRAY)
+    right_gray = cv2.cvtColor(right_img, cv2.COLOR_BGR2GRAY)
 
-    disparity_map = stereo.compute(left_img, right_img)
+    print("\nComputing the disparity  map...")
+    disparity_map = stereo.compute(left_gray, right_gray)
 
     return disparity_map

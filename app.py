@@ -122,20 +122,37 @@ def serve_layout():
                                 ],
                                 val="bm",
                             ),
+                            drc.NamedInlineRadioItems(
+                                name="Pre filter type (only BM)",
+                                short="xsobel",
+                                options=[
+                                    {"label": " Norm. response", "value": False},
+                                    {"label": " XSobel", "value": True},
+                                ],
+                                val=False,
+                            ),
+                            dcc.Checklist(
+                                id='dynamic_programming',
+                                options=[
+                                    {'label': 'Full Dynamic Programming (only SGBM)', 'value': True},
+                                ],
+                                value=False,
+                                labelStyle={'display': 'inline-block'}
+                            ),
                         ]
                     ),
                     drc.Card(
-                        [
-                            drc.CustomSlider("Block size", min=1, max=11, step=2, value=5, allow_inter=False),
-                            drc.CustomSlider("Number of disparities", min=16, max=16 * 17, step=16, value=64, allow_inter=False),
-                            drc.CustomSlider("Min disparity", min=0, max=16 * 17, step=16, value=0, allow_inter=False),
-                            drc.CustomSlider("P1", min=0, max=256, step=16, value=0),
-                            drc.CustomSlider("P2", min=0, max=256, step=16, value=0),
-                            drc.CustomSlider("Disp 12 Max Diff", min=0, max=2, step=1, value=0),
-                            drc.CustomSlider("Uniqueness Ratio", min=0, max=20, step=1, value=0),
-                            drc.CustomSlider("Pre Filter Cap", min=1, max=63, step=2, value=1),
-                            drc.CustomSlider("Speckle Windows Size", min=0, max=256, step=16, value=0),
-                            drc.CustomSlider("Speckle Range", min=0, max=256, step=16, value=0)
+                        [drc.CustomSlider("Block size", min=5, max=255, step=2, value=5),
+                            drc.CustomSlider("Number of disparities", min=16, max=2048, step=16, value=64),
+                            drc.CustomSlider("Min disparity", min=0, max=255, step=1, value=0),
+                            drc.CustomSlider("P1 (only SGBM)", min=0, max=2048, step=1, value=0),
+                            drc.CustomSlider("P2 (only SGBM)", min=0, max=2048, step=1, value=0),
+                            drc.CustomSlider("Uniqueness Ratio", min=0, max=255, step=1, value=0),
+                            drc.CustomSlider("Pre Filter Cap", min=1, max=63, step=1, value=1),
+                            drc.CustomSlider("Disp 12 Max Diff", min=-1, max=255, step=1, value=-1),
+                            drc.CustomSlider("Speckle Windows Size", min=0, max=2048, step=1, value=0),
+                            drc.CustomSlider("Speckle Range", min=0, max=255, step=1, value=0),
+                            drc.CustomSlider("Texture Threshold (only BM)", min=0, max=255, step=1, value=0)
                         ]
                     )
                 ],
@@ -152,26 +169,28 @@ app.layout = serve_layout
         Output("val-Block size", "children"),
         Output("val-Number of disparities", "children"),
         Output("val-Min disparity", "children"),
-        Output("val-P1", "children"),
-        Output("val-P2", "children"),
+        Output("val-P1 (only SGBM)", "children"),
+        Output("val-P2 (only SGBM)", "children"),
         Output("val-Disp 12 Max Diff", "children"),
         Output("val-Uniqueness Ratio", "children"),
         Output("val-Pre Filter Cap", "children"),
         Output("val-Speckle Windows Size", "children"),
-        Output("val-Speckle Range", "children")
+        Output("val-Speckle Range", "children"),
+        Output("val-Texture Threshold (only BM)", "value")
     ]
     ,
     [
         Input("slider-Block size", "value"),
         Input("slider-Number of disparities", "value"),
         Input("slider-Min disparity", "value"),
-        Input("slider-P1", "value"),
-        Input("slider-P2", "value"),
+        Input("slider-P1 (only SGBM)", "value"),
+        Input("slider-P2 (only SGBM)", "value"),
         Input("slider-Disp 12 Max Diff", "value"),
         Input("slider-Uniqueness Ratio", "value"),
         Input("slider-Pre Filter Cap", "value"),
         Input("slider-Speckle Windows Size", "value"),
-        Input("slider-Speckle Range", "value")
+        Input("slider-Speckle Range", "value"),
+        Input("slider-Texture Threshold (only BM)", "value")
     ]
 )
 def update_param_display(block_size,
@@ -183,13 +202,13 @@ def update_param_display(block_size,
                          uniqueness_ratio,
                          pre_filter_cap,
                          speckle_windows_size,
-                         speckle_range):
+                         speckle_range, texture_threshold):
     return f"Block size: {block_size}", \
            f"Number of disparities: {n_disparities}", \
-           f"Min number of disparities: {min_disparities}", f"P1: {p1}", f"P2: {p2}", \
+           f"Min number of disparities: {min_disparities}", f"P1 (only SGBM): {p1}", f"P2 (only SGBM): {p2}", \
            f"Disp 12 Max Diff: {disp_12_max_diff}", f"Uniqueness ratio: {uniqueness_ratio}", \
            f"Pre Filter Cap: {pre_filter_cap}", f"Speckle Windows Size: {speckle_windows_size}", \
-           f"Speckle Range: {speckle_range}"
+           f"Speckle Range: {speckle_range}", f"Texture Threshold (only BM): {texture_threshold}"
 
 
 @app.callback(
@@ -202,16 +221,19 @@ def update_param_display(block_size,
         Input("upload-image-left", "contents"),
         Input("upload-image-right", "contents"),
         Input("radio-algo", "value"),
+        Input("radio-xsobel", "value"),
+        Input("dynamic_programming", "value"),
         Input("slider-Block size", "value"),
         Input("slider-Number of disparities", "value"),
         Input("slider-Min disparity", "value"),
-        Input("slider-P1", "value"),
-        Input("slider-P2", "value"),
+        Input("slider-P1 (only SGBM)", "value"),
+        Input("slider-P2 (only SGBM)", "value"),
         Input("slider-Disp 12 Max Diff", "value"),
         Input("slider-Uniqueness Ratio", "value"),
         Input("slider-Pre Filter Cap", "value"),
         Input("slider-Speckle Windows Size", "value"),
-        Input("slider-Speckle Range", "value")
+        Input("slider-Speckle Range", "value"),
+        Input("slider-Texture Threshold (only BM)", "value")
     ],
     [
         State("upload-image-left", "filename"),
@@ -224,6 +246,8 @@ def update_graph_interactive_image(
         right_content,
         # sliders
         algo,
+        use_xsobel,
+        use_dynamic_programming,
         block_size,
         n_disparities,
         min_disparities,
@@ -234,6 +258,7 @@ def update_graph_interactive_image(
         pre_filter_cap,
         speckle_windows_size,
         speckle_range,
+        texture_threshold,
         # states
         new_left_name,
         new_right_name,
@@ -258,7 +283,6 @@ def update_graph_interactive_image(
         left = drc.b64_to_numpy(data['left']['image'], to_scalar=False)
         right = drc.b64_to_numpy(data['right']['image'], to_scalar=False)
 
-
         if algo == "bm":
             disparity_map = generate_stereo_bm_disparity_map(left, right,
                                                              min_disp=min_disparities,
@@ -268,7 +292,9 @@ def update_graph_interactive_image(
                                                              disp12maxdiff=disp_12_max_diff,
                                                              uniqueness_ratio=uniqueness_ratio,
                                                              speckle_windows_size=speckle_windows_size,
-                                                             speckle_range=speckle_range)
+                                                             speckle_range=speckle_range,
+                                                             texture_threshold=texture_threshold,
+                                                             use_xsobel=use_xsobel)
         else:
             disparity_map = generate_stereo_sgbm_disparity_map(left, right,
                                                                min_disp=min_disparities,
@@ -280,7 +306,8 @@ def update_graph_interactive_image(
                                                                disp12maxdiff=disp_12_max_diff,
                                                                uniqueness_ratio=uniqueness_ratio,
                                                                speckle_windows_size=speckle_windows_size,
-                                                               speckle_range=speckle_range)
+                                                               speckle_range=speckle_range,
+                                                               use_dynamic_programming=use_dynamic_programming)
         disparity_map = cv2.normalize(disparity_map, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX,
                                       dtype=cv2.CV_8U)
         result = Image.fromarray(disparity_map)
@@ -288,8 +315,8 @@ def update_graph_interactive_image(
         raise PreventUpdate
 
     t_end = time.time()
-    if DEBUG:
-        print(f"Image processed on {t_end - t_start:.3f} sec")
+
+    print(f"Image processed on {t_end - t_start:.3f} sec")
 
     return [
                drc.InteractiveImagePIL(
