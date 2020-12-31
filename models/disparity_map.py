@@ -74,7 +74,6 @@ def generate_stereo_bm_disparity_map(left_img, right_img, min_disp=0, num_disp=6
     stereo.setTextureThreshold(texture_threshold)
     stereo.setPreFilterType(prefilter_type)
 
-    print("\nComputing the disparity  map...")
     disparity_map = stereo.compute(left_img, right_img)
 
     return disparity_map

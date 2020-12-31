@@ -152,8 +152,8 @@ def Card(children, **kwargs):
         children,
         style=_merge(
             {
-                "padding": 20,
-                "margin": 5,
+                "padding": 10,
+                "margin": 2,
                 # Remove possibility to select the text for better UX
                 "user-select": "none",
                 "-moz-user-select": "none",
@@ -234,7 +234,6 @@ def InteractiveImagePIL(
                 "autosize": True,
                 "paper_bgcolor": "#272a31",
                 "plot_bgcolor": "#272a31",
-                "margin": go.Margin(l=40, b=40, t=26, r=10),
                 "xaxis": {
                     "range": (0, width),
                     "scaleanchor": "y",
@@ -295,3 +294,11 @@ def CustomDropdown(**kwargs):
     return html.Div(
         dcc.Dropdown(**kwargs), style={"margin-top": "5px", "margin-bottom": "5px"}
     )
+
+
+def CustomSlider(title, min, max, step, value):
+    labels = {int(i): str(i) for i in range(min, max, step)}
+    return html.Div([
+        html.P(title),
+        dcc.Slider(id=f'slider-{title}', min=min, max=max, step=None, value=value, marks=labels)
+   ])
