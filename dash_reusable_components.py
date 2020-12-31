@@ -299,6 +299,6 @@ def CustomDropdown(**kwargs):
 def CustomSlider(title, min, max, step, value):
     labels = {int(i): str(i) for i in range(min, max, step)}
     return html.Div([
-        html.P(title),
-        dcc.Slider(id=f'slider-{title}', min=min, max=max, step=None, value=value, marks=labels)
+        html.P(id=f"val-{title}", children=title),
+        dcc.Slider(id=f'slider-{title}', min=min, max=max, step=1, value=value, marks=labels)
    ])

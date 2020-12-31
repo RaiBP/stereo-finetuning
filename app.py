@@ -5,7 +5,6 @@ import uuid
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-import numpy as np
 from PIL import Image
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
@@ -129,7 +128,7 @@ def serve_layout():
                         [
                             drc.CustomSlider("Block size", min=1, max=11, step=2, value=5),
                             drc.CustomSlider("Number of disparities", min=16, max=16 * 17, step=16, value=64),
-                            drc.CustomSlider("Min disparity", min=0, max=16*17, step=16, value=0),
+                            drc.CustomSlider("Min disparity", min=0, max=16 * 17, step=16, value=0),
                             drc.CustomSlider("P1", min=0, max=256, step=16, value=0),
                             drc.CustomSlider("P2", min=0, max=256, step=16, value=0),
                             drc.CustomSlider("Disp 12 Max Diff", min=0, max=2, step=1, value=0),
@@ -146,6 +145,51 @@ def serve_layout():
 
 
 app.layout = serve_layout
+
+
+@app.callback(
+    [
+        Output("val-Block size", "children"),
+        Output("val-Number of disparities", "children"),
+        Output("val-Min disparity", "children"),
+        Output("val-P1", "children"),
+        Output("val-P2", "children"),
+        Output("val-Disp 12 Max Diff", "children"),
+        Output("val-Uniqueness Ratio", "children"),
+        Output("val-Pre Filter Cap", "children"),
+        Output("val-Speckle Windows Size", "children"),
+        Output("val-Speckle Range", "children")
+    ]
+    ,
+    [
+        Input("slider-Block size", "value"),
+        Input("slider-Number of disparities", "value"),
+        Input("slider-Min disparity", "value"),
+        Input("slider-P1", "value"),
+        Input("slider-P2", "value"),
+        Input("slider-Disp 12 Max Diff", "value"),
+        Input("slider-Uniqueness Ratio", "value"),
+        Input("slider-Pre Filter Cap", "value"),
+        Input("slider-Speckle Windows Size", "value"),
+        Input("slider-Speckle Range", "value")
+    ]
+)
+def update_param_display(block_size,
+                         n_disparities,
+                         min_disparities,
+                         p1,
+                         p2,
+                         disp_12_max_diff,
+                         uniqueness_ratio,
+                         pre_filter_cap,
+                         speckle_windows_size,
+                         speckle_range):
+    return f"Block size: {block_size}", \
+           f"Number of disparities: {n_disparities}", \
+           f"Min number of disparities: {min_disparities}", f"P1: {p1}", f"P2: {p2}", \
+           f"Disp 12 Max Diff: {disp_12_max_diff}", f"Uniqueness ratio: {uniqueness_ratio}", \
+           f"Pre Filter Cap: {pre_filter_cap}", f"Speckle Windows Size: {speckle_windows_size}", \
+           f"Speckle Range: {speckle_range}"
 
 
 @app.callback(
@@ -234,7 +278,8 @@ def update_graph_interactive_image(
                                                                uniqueness_ratio=uniqueness_ratio,
                                                                speckle_windows_size=speckle_windows_size,
                                                                speckle_range=speckle_range)
-        disparity_map = cv2.normalize(disparity_map, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+        disparity_map = cv2.normalize(disparity_map, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX,
+                                      dtype=cv2.CV_8U)
         result = Image.fromarray(disparity_map)
     else:
         raise PreventUpdate
