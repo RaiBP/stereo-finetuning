@@ -126,9 +126,9 @@ def serve_layout():
                     ),
                     drc.Card(
                         [
-                            drc.CustomSlider("Block size", min=1, max=11, step=2, value=5),
-                            drc.CustomSlider("Number of disparities", min=16, max=16 * 17, step=16, value=64),
-                            drc.CustomSlider("Min disparity", min=0, max=16 * 17, step=16, value=0),
+                            drc.CustomSlider("Block size", min=1, max=11, step=2, value=5, allow_inter=False),
+                            drc.CustomSlider("Number of disparities", min=16, max=16 * 17, step=16, value=64, allow_inter=False),
+                            drc.CustomSlider("Min disparity", min=0, max=16 * 17, step=16, value=0, allow_inter=False),
                             drc.CustomSlider("P1", min=0, max=256, step=16, value=0),
                             drc.CustomSlider("P2", min=0, max=256, step=16, value=0),
                             drc.CustomSlider("Disp 12 Max Diff", min=0, max=2, step=1, value=0),
@@ -258,6 +258,7 @@ def update_graph_interactive_image(
         left = drc.b64_to_numpy(data['left']['image'], to_scalar=False)
         right = drc.b64_to_numpy(data['right']['image'], to_scalar=False)
 
+
         if algo == "bm":
             disparity_map = generate_stereo_bm_disparity_map(left, right,
                                                              min_disp=min_disparities,
@@ -273,6 +274,8 @@ def update_graph_interactive_image(
                                                                min_disp=min_disparities,
                                                                num_disp=n_disparities,
                                                                block_size=block_size,
+                                                               p1=p1,
+                                                               p2=p2,
                                                                prefilter_cap=pre_filter_cap,
                                                                disp12maxdiff=disp_12_max_diff,
                                                                uniqueness_ratio=uniqueness_ratio,
