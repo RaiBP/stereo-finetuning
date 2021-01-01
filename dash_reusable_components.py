@@ -1,12 +1,10 @@
 import base64
-from io import BytesIO as _BytesIO
 import time
+from io import BytesIO as _BytesIO
 
 import dash_core_components as dcc
 import dash_html_components as html
 import numpy as np
-
-import plotly.graph_objs as go
 from PIL import Image
 
 # Variables
@@ -213,7 +211,7 @@ def NamedInlineRadioItems(name, short, options, val, **kwargs):
 
 # Custom Image Components
 def InteractiveImagePIL(
-    image_id, image, enc_format="png", dragmode="select", verbose=False, **kwargs
+        image_id, image, enc_format="png", dragmode="select", verbose=False, **kwargs
 ):
     if enc_format == "jpeg":
         if image.mode == "RGBA":
@@ -239,13 +237,13 @@ def InteractiveImagePIL(
                     "scaleanchor": "y",
                     "scaleratio": 1,
                     "color": "white",
-                    #"gridcolor": "#43454a",
+                    # "gridcolor": "#43454a",
                     "tickwidth": 1,
                 },
                 "yaxis": {
                     "range": (0, height),
                     "color": "white",
-                    #"gridcolor": "#43454a",
+                    # "gridcolor": "#43454a",
                     "tickwidth": 1,
                 },
                 "images": [
@@ -302,4 +300,4 @@ def CustomSlider(title, min, max, step, value):
         html.P(id=f"val-{title}", children=title),
         dcc.Slider(id=f'slider-{title}', min=min, max=max, step=step, value=value, marks=labels,
                    updatemode='drag')
-   ])
+    ])

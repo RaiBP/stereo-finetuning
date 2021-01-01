@@ -45,13 +45,7 @@ def serve_layout():
                             # the true image
                             html.Div(
                                 id="div-interactive-image",
-                                children=[
-                                    utils.GRAPH_PLACEHOLDER,
-                                    html.Div(
-                                        id="div-storage",
-                                        children=utils.STORAGE_PLACEHOLDER,
-                                    ),
-                                ],
+                                children=[],
                             )
                         ],
                     ),
@@ -79,7 +73,7 @@ def serve_layout():
                                 # No CSS alternative here
                                 style={
                                     "color": "darkgray",
-                                    "width": "40%",
+                                    "width": "45%",
                                     "height": "8px",
                                     "lineHeight": "10px",
                                     "borderWidth": "1px",
@@ -102,7 +96,7 @@ def serve_layout():
                                 # No CSS alternative here
                                 style={
                                     "color": "darkgray",
-                                    "width": "40%",
+                                    "width": "45%",
                                     "height": "8px",
                                     "lineHeight": "10px",
                                     "borderWidth": "1px",
@@ -146,7 +140,7 @@ def serve_layout():
                         ]
                     ),
                     drc.Card(
-                        [drc.CustomSlider("Block size", min=5, max=255, step=2, value=5),
+                        [drc.CustomSlider("Block size", min=1, max=255, step=2, value=5),
                             drc.CustomSlider("Number of disparities", min=16, max=2048, step=16, value=64),
                             drc.CustomSlider("Min disparity", min=0, max=255, step=1, value=0),
                             drc.CustomSlider("P1 (only SGBM)", min=0, max=2048, step=1, value=0),
@@ -268,7 +262,6 @@ def update_graph_interactive_image(
         new_right_name,
         data
 ):
-    t_start = time.time()
     data = data or {'left': {'filename': None, 'image': None}, 'right': {'filename': None, 'image': None}}
 
     left_name = data['left']['filename']
@@ -315,24 +308,19 @@ def update_graph_interactive_image(
         disparity_map = cv2.normalize(disparity_map, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX,
                                       dtype=cv2.CV_8U)
         result = Image.fromarray(disparity_map)
+        left_pil = Image.fromarray(left)
     else:
         raise PreventUpdate
 
-    t_end = time.time()
-
-    print(f"Image processed on {t_end - t_start:.3f} sec")
-
     return [
-               drc.InteractiveImagePIL(
-                   image_id="interactive-image",
-                   image=result,
-                   enc_format="png",
-                   dragmode="select",
-                   verbose=DEBUG,
-               )
+                html.Label("Left Image", style=dict(color="white")),
+                drc.DisplayImagePIL(id="left-image", image=left_pil),
+                html.Br(),
+                html.Label("Disparity Map", style=dict(color="white")),
+                drc.DisplayImagePIL(id="depth-map", image=result)
            ], data
 
 
 # Running the server
 if __name__ == "__main__":
-    app.run_server(debug=False, host="0.0.0.0")
+    app.run_server(debug=False)
