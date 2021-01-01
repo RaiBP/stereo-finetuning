@@ -35,14 +35,8 @@ def serve_layout():
             # Main body
             html.Div(
                 id="app-container",
+                style=dict(position="fixed", top=0, right=0, height="100vh"),
                 children=[
-                    # Banner display
-                    html.Div(
-                        id="banner",
-                        children=[
-                            html.H2("Stereo Tuner", id="title"),
-                        ],
-                    ),
                     html.Div(
                         id="image",
                         children=[
@@ -66,19 +60,26 @@ def serve_layout():
             # Sidebar
             html.Div(
                 id="sidebar",
+                style=dict(float="right", position="absolute"),
                 children=[
+                    # Banner display
+                    html.Div(
+                        id="banner",
+                        children=[
+                            html.H2("Stereo Tuner", id="title"),
+                        ],
+                    ),
                     drc.Card(
                         [
                             dcc.Upload(
                                 id="upload-image-left",
                                 children=[
-                                    "Drag and Drop or ",
-                                    html.A(children="Select the Left Image"),
+                                    html.A(children="Select Left Image"),
                                 ],
                                 # No CSS alternative here
                                 style={
                                     "color": "darkgray",
-                                    "width": "100%",
+                                    "width": "40%",
                                     "height": "8px",
                                     "lineHeight": "10px",
                                     "borderWidth": "1px",
@@ -88,19 +89,20 @@ def serve_layout():
                                     "textAlign": "center",
                                     "padding": "2rem 0",
                                     "margin-bottom": "2rem",
+                                    "float": "left",
+                                    "margin-right": "20px"
                                 },
                                 accept="image/*",
                             ),
                             dcc.Upload(
                                 id="upload-image-right",
                                 children=[
-                                    "Drag and Drop or ",
-                                    html.A(children="Select the Right Image"),
+                                    html.A(children="Select Right Image"),
                                 ],
                                 # No CSS alternative here
                                 style={
                                     "color": "darkgray",
-                                    "width": "100%",
+                                    "width": "40%",
                                     "height": "8px",
                                     "lineHeight": "10px",
                                     "borderWidth": "1px",
@@ -110,6 +112,8 @@ def serve_layout():
                                     "textAlign": "center",
                                     "padding": "2rem 0",
                                     "margin-bottom": "2rem",
+                                    "display": "inline-block"
+
                                 },
                                 accept="image/*",
                             ),
@@ -331,4 +335,4 @@ def update_graph_interactive_image(
 
 # Running the server
 if __name__ == "__main__":
-    app.run_server(debug=False)
+    app.run_server(debug=False, host="0.0.0.0")
