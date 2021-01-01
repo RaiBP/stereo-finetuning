@@ -26,6 +26,7 @@ ENV PATH /env/bin:$PATH
 RUN apt-get update \
  && apt-get install -y ffmpeg libsm6 libxext6
 ADD requirements.txt /app/requirements.txt
+RUN /env/bin/python -m pip install --upgrade pip
 RUN pip install -r /app/requirements.txt
 
 # Add the application source code.

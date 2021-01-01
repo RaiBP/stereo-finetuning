@@ -1,7 +1,7 @@
 import pathlib
 import time
 import uuid
-
+import argparse
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -323,4 +323,14 @@ def update_graph_interactive_image(
 
 # Running the server
 if __name__ == "__main__":
-    app.run_server(debug=False)
+
+    parser = argparse.ArgumentParser(description='Model eval')
+    parser.add_argument('-p', '--port', default=80, type=int, help='Port')
+    parser.add_argument('-m', '--mode', default="local", type=str,
+                        help='Mode [local or production].')
+    args = parser.parse_args()
+
+    if args.mode == 'local':
+        app.run_server(debug=True)
+    else:
+        app.run_server(debug=False, host='0.0.0.0', port=args.port)
