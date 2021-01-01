@@ -16,6 +16,7 @@ LOCAL = False
 APP_PATH = str(pathlib.Path(__file__).parent.resolve())
 
 app = dash.Dash(__name__)
+app.title = 'Stereo Tuner'
 server = app.server
 
 
