@@ -1,5 +1,4 @@
 import pathlib
-import time
 import uuid
 import argparse
 import dash
@@ -10,8 +9,7 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 import dash_reusable_components as drc
-import utils
-from models.disparity_map import *
+from disparity_map import *
 
 DEBUG = True
 LOCAL = False
@@ -331,6 +329,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.mode == 'local':
-        app.run_server(debug=True)
+        app.run_server(debug=False)
     else:
         app.run_server(debug=False, host='0.0.0.0', port=args.port)
