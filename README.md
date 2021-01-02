@@ -8,7 +8,7 @@ Dash application for tuning parameters of StereoBM and Stereo SGBM algorithms in
 
 `pip install -r <PROJECT_PATH>/requirements.txt`
 
-* Install necessary packages for OpenCV with
+* If using Linux, it may be neccesary to install some libraries OpenCV requires:
 
     * **Ubuntu:**  `apt-get install -y ffmpeg libsm6 libxext6`
 

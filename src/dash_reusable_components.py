@@ -286,6 +286,7 @@ def DisplayImagePIL(id, image, position, **kwargs):
             id=f"img-{id}",
             src=HTML_IMG_SRC_PARAMETERS + encoded_image,
             height="45%",
+            width="100%",
             **kwargs,
         )
     else:
@@ -294,6 +295,7 @@ def DisplayImagePIL(id, image, position, **kwargs):
             src=HTML_IMG_SRC_PARAMETERS + encoded_image,
             style=dict(float=position),
             width="50%",
+            height="100%",
             **kwargs,
         )
 
