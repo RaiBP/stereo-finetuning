@@ -312,11 +312,8 @@ def update_graph_interactive_image(
         raise PreventUpdate
 
     return [
-                html.Label("Left Image", style=dict(color="white")),
-                drc.DisplayImagePIL(id="left-image", image=left_pil),
-                html.Br(),
-                html.Label("Disparity Map", style=dict(color="white")),
-                drc.DisplayImagePIL(id="depth-map", image=result)
+                drc.DisplayImagePIL(id="left-image", image=left_pil, position="right"),
+                drc.DisplayImagePIL(id="depth-map", image=result, position="left")
            ], data
 
 

@@ -277,15 +277,25 @@ def InteractiveImagePIL(
     )
 
 
-def DisplayImagePIL(id, image, **kwargs):
+def DisplayImagePIL(id, image, position, **kwargs):
+    width, height = image.size
     encoded_image = pil_to_b64(image, enc_format="png")
 
-    return html.Img(
-        id=f"img-{id}",
-        src=HTML_IMG_SRC_PARAMETERS + encoded_image,
-        width="100%",
-        **kwargs,
-    )
+    if width > height:
+        return html.Img(
+            id=f"img-{id}",
+            src=HTML_IMG_SRC_PARAMETERS + encoded_image,
+            height="45%",
+            **kwargs,
+        )
+    else:
+        return html.Img(
+            id=f"img-{id}",
+            src=HTML_IMG_SRC_PARAMETERS + encoded_image,
+            style=dict(float=position),
+            width="50%",
+            **kwargs,
+        )
 
 
 def CustomDropdown(**kwargs):
