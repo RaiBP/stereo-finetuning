@@ -1,6 +1,7 @@
+import argparse
 import pathlib
 import uuid
-import argparse
+
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -140,17 +141,17 @@ def serve_layout():
                     ),
                     drc.Card(
                         [drc.CustomSlider("Block size", min=1, max=255, step=2, value=5),
-                            drc.CustomSlider("Number of disparities", min=16, max=2048, step=16, value=64),
-                            drc.CustomSlider("Min disparity", min=0, max=255, step=1, value=0),
-                            drc.CustomSlider("P1 (only SGBM)", min=0, max=2048, step=1, value=0),
-                            drc.CustomSlider("P2 (only SGBM)", min=0, max=2048, step=1, value=0),
-                            drc.CustomSlider("Uniqueness Ratio", min=0, max=255, step=1, value=0),
-                            drc.CustomSlider("Pre Filter Cap", min=1, max=63, step=1, value=1),
-                            drc.CustomSlider("Disp 12 Max Diff", min=-1, max=255, step=1, value=-1),
-                            drc.CustomSlider("Speckle Windows Size", min=0, max=2048, step=1, value=0),
-                            drc.CustomSlider("Speckle Range", min=0, max=255, step=1, value=0),
-                            drc.CustomSlider("Texture Threshold (only BM)", min=0, max=255, step=1, value=0)
-                        ]
+                         drc.CustomSlider("Number of disparities", min=16, max=2048, step=16, value=64),
+                         drc.CustomSlider("Min disparity", min=0, max=255, step=1, value=0),
+                         drc.CustomSlider("P1 (only SGBM)", min=0, max=2048, step=1, value=0),
+                         drc.CustomSlider("P2 (only SGBM)", min=0, max=2048, step=1, value=0),
+                         drc.CustomSlider("Uniqueness Ratio", min=0, max=255, step=1, value=0),
+                         drc.CustomSlider("Pre Filter Cap", min=1, max=63, step=1, value=1),
+                         drc.CustomSlider("Disp 12 Max Diff", min=-1, max=255, step=1, value=-1),
+                         drc.CustomSlider("Speckle Windows Size", min=0, max=2048, step=1, value=0),
+                         drc.CustomSlider("Speckle Range", min=0, max=255, step=1, value=0),
+                         drc.CustomSlider("Texture Threshold (only BM)", min=0, max=255, step=1, value=0)
+                         ]
                     )
                 ],
             ),
@@ -159,6 +160,15 @@ def serve_layout():
 
 
 app.layout = serve_layout
+
+
+@app.callback([Output("slider-Block size", "min"),
+               Output("slider-Block size", "marks")],
+              [Input("radio-algo", "value")])
+def update_sliders(algo):
+    if algo == "bm":
+        return 5, {'5': 5, '255': 255}
+    return 1, {'1': 1, '255': 255}
 
 
 @app.callback(
@@ -312,8 +322,8 @@ def update_graph_interactive_image(
         raise PreventUpdate
 
     return [
-                drc.DisplayImagePIL(id="left-image", image=left_pil, position="right"),
-                drc.DisplayImagePIL(id="depth-map", image=result, position="left")
+               drc.DisplayImagePIL(id="left-image", image=left_pil, position="right"),
+               drc.DisplayImagePIL(id="depth-map", image=result, position="left")
            ], data
 
 
