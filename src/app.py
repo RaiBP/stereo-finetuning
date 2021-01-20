@@ -234,6 +234,8 @@ def save_parameters(n_clicks, algo, wls_filtering, use_xsobel, use_dp, block_siz
             wls_filtering = wls_filtering[0]
         except TypeError:
             wls_filtering = False
+        except IndexError:
+            wls_filtering = False
 
         if not os.path.exists('./bm_parameters'):
             os.makedirs('./bm_parameters')
@@ -253,7 +255,7 @@ def save_parameters(n_clicks, algo, wls_filtering, use_xsobel, use_dp, block_siz
                               wls_filtering=wls_filtering,
                               lmbda=lmbda,
                               sigma=sigma)
-            output_fn = f'./bm_parameters/parameters_{left_name.split(".")[0]}_stereo-bm.json'
+            output_fn = f'./bm_parameters/parameters_{left_name.split("_")[0]}_stereo-bm.json'
             with open(output_fn, 'w') as outfile:
                 json.dump(param_json, outfile)
                 print(f"Saved {output_fn}")
@@ -274,7 +276,7 @@ def save_parameters(n_clicks, algo, wls_filtering, use_xsobel, use_dp, block_siz
                               lmbda=lmbda,
                               sigma=sigma)
 
-            output_fn = f'./bm_parameters/parameters_{left_name.split(".")[0]}_stereo-sgbm.json'
+            output_fn = f'./bm_parameters/parameters_{left_name.split("_")[0]}_stereo-sgbm.json'
             with open(output_fn, 'w') as outfile:
                 json.dump(param_json, outfile)
                 print(f"Saved {output_fn}")
